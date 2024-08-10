@@ -103,6 +103,9 @@ button {
     opacity: 0;
     animation: ss_anim1 .5s ease-out 1;
 }
+.score_show.slow {
+    animation: ss_anim1 2s ease-out 1;
+}
 @media screen and (min-width: 800px) {
     :root {
         --ccb_font_size: 96px;
