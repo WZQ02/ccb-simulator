@@ -83,6 +83,15 @@ button {
     animation: cnt_anim1 .1s linear infinite;
     z-index: 2;
 }
+#ccb_mode_title {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    text-align: right;
+    color: #fff;
+    text-shadow: 4px 4px 0px #900;
+    z-index: 2;
+}
 #ccb_noti_progress {
     width: 40vw;
     height: calc(var(--ccb_font_size)*.4);

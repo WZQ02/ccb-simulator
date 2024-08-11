@@ -58,6 +58,7 @@
                 <progress id="ccb_noti_progress" max="100" style="display:none"></progress><br>
                 <span id="cnp_txt"></span>
             </div>
+            <div id="ccb_mode_title"></div>
         </div>
     </div>
     <div id="sounds">
@@ -70,7 +71,7 @@
     </div>
 </body>
 <script>
-    const app_date = "2024/8/10",app_name = "ccb-simulator",app_ver = "0.0.3"
+    const app_date = "2024/8/11",app_name = "ccb-simulator",app_ver = "0.0.3"
     const app = document.getElementById("ccb_app")
     const screen1 = document.getElementById("ccb_screen_1")
     const screen2 = document.getElementById("ccb_screen_2")
@@ -80,6 +81,7 @@
     const progress = document.getElementById("ccb_noti_progress")
     const clt_2bt = document.getElementById("clt_2bt")
     const play_ccb = document.getElementById("play_ccb")
+    const cmt = document.getElementById("ccb_mode_title")
     app.style = ""
     screen1.style = ""
     let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2
@@ -277,6 +279,7 @@
         document.getElementById("cet_txt2").innerText = ""
         document.getElementById("cet_txt3").innerText = ""
         document.getElementById("story1").currentTime = 0
+        cmt.innerText = ""
     }
     function play0() {
         clt_2bt.style.display = ""
@@ -284,10 +287,12 @@
     }
     function play1() {
         ccb_game_mode = 0
+        cmt.innerText = "经典模式"
         play()
     }
     function play2() {
         ccb_game_mode = 1
+        cmt.innerText = "挑战模式"
         play()
     }
     function lct_value_ev() {
@@ -305,14 +310,14 @@
             }
             if (l1c_diff < 50) {
                 ccb_lc_doubt++
-                if (ccb_lc_doubt > 3) {
+                if (ccb_lc_doubt > 5) {
                     over()
                     document.getElementById("cet_txt").innerText = "你是不是开了！？"
                     console.log("挑战模式还想作弊？呵呵！")
                 }
             } else {
                 if (ccb_lc_doubt > 0) {
-                    ccb_lc_doubt--
+                    ccb_lc_doubt = 0
                 }
             }
         }
