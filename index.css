@@ -6,7 +6,7 @@
 :root {
     --ccb_font_size: 12vw;
 }
-#ccb_screen_1,#ccb_screen_2,#ccb_screen_5 {
+#ccb_screen_1,#ccb_screen_2,#ccb_screen_5,#ccb_screen_6 {
     background-color: #000;
     position: absolute;
     left: 0px;
@@ -17,11 +17,17 @@
 #ccb_large_title,#play_ccb,#ccb_end_title {
     position: relative;
 }
-#ccb_large_title,#ccb_noti_title,#ccb_end_title {
+#ccb_large_title,#ccb_noti_title,#ccb_end_title,#ccb_s6_title {
     color: #ff7;
     top: calc(50vh - var(--ccb_font_size));
     font-size: var(--ccb_font_size);
     text-align: center;
+}
+#ccb_s6_title_txt1 {
+    color: #f44;
+}
+#s6_pics span {
+    color: #fff;
 }
 button {
     width: calc(var(--ccb_font_size)*2.8);
