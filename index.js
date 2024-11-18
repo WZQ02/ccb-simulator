@@ -1,4 +1,4 @@
-const app_date = "2024/11/12",app_name = "ccb-simulator",app_ver = "0.0.5"
+const app_date = "2024/11/18",app_name = "ccb-simulator",app_ver = "0.0.6"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -116,12 +116,13 @@ function ccb_click() {
     document.getElementById("cet_txt2").innerText = "CCB: "+score
     const img = document.getElementById("screen4_elp")
     const wow = document.getElementById("screen4_wow")
-    img.style.transition = "none"
+    img.style = "bottom:10px;transition:none"
     gen_audio_el("assets/mp3/wow_1.mp3")
     wow.style = "display:block;transition:none"
     setTimeout(()=>{
         wow.style = "display:block;width:calc(var(--ccb_font_size)*25);left:calc(var(--ccb_font_size)*-7);bottom:calc(var(--ccb_font_size)*-4)"
-    },5)
+        img.style = "bottom:-10px;transition:.05s"
+    },2)
     cb_count++
     document.getElementById("cnp_txt").innerText = "踩背次数："+cb_count
     progress.value += 40
