@@ -1,4 +1,4 @@
-const app_date = "2024/11/18",app_name = "ccb-simulator",app_ver = "0.0.6"
+const app_date = "2024/12/1",app_name = "ccb-simulator",app_ver = "0.0.7"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -213,6 +213,7 @@ function reset() {
     document.getElementById("cet_txt3").innerText = ""
     document.getElementById("story1").currentTime = 0
     cmt.innerText = ""
+    document.getElementById("us_notify").style.display = "block"
 }
 function play0() {
     clt_2bt.style.display = ""
