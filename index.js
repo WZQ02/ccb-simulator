@@ -1,4 +1,4 @@
-const app_date = "2024/12/1",app_name = "ccb-simulator",app_ver = "0.0.7"
+const app_date = "2024/12/28",app_name = "ccb-simulator",app_ver = "0.0.8"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -13,7 +13,7 @@ const cmt = document.getElementById("ccb_mode_title")
 app.style = ""
 screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2
-let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0
+let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 })
@@ -287,4 +287,18 @@ document.getElementById("s4_im_upl").addEventListener('change',function(e){
 document.getElementById("s4_wo_upl").addEventListener('change',function(e){
     handlefile(e.target.files[0],"s4_wo")
 })
+function toggle_bgm() {
+    const c = document.getElementById("bt_icon")
+    const b = document.getElementById("bgm")
+    if (!bgm_on) {
+        bgm_on = 1
+        c.src = "assets/png/speaker.png"
+        b.play()
+    } else {
+        bgm_on = 0
+        c.src = "assets/png/speakerm.png"
+        b.pause()
+        b.currentTime = 0
+    }
+}
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)

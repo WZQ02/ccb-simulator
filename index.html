@@ -32,6 +32,9 @@
             <div id="us_notify" style="position:absolute;top:0px;right:0px;font-size:16px;display:none">
                 <a style="color:#fff" href="www_script/index.user.js">在你冲浪的任何网站上踩踩背！</a>
             </div>
+            <div id="bgm_toggle" style="position:absolute;top:8px;left:8px;font-size:16px">
+                <img src="assets/png/speakerm.png" id="bt_icon" title="BGM" onclick="toggle_bgm()"/>
+            </div>
         </div>
         <div id="ccb_screen_2" style="display:none">
             <button id="skip_story" onclick="ccb_start()">跳过剧情</button>
@@ -91,6 +94,7 @@
         <audio src="assets/mp3/wow_2.mp3" id="wow_2"></audio>
         <audio src="assets/mp3/fail.mp3" id="fail"></audio>
         <audio src="assets/mp3/wcsndm.mp3" id="wcsndm"></audio>
+        <audio src="assets/opus/bgm.opus" id="bgm"></audio>
     </div>
 </body>
 <script src="index.js"></script>
