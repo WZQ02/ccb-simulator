@@ -1,4 +1,4 @@
-const app_date = "2024/12/28",app_name = "ccb-simulator",app_ver = "0.0.8"
+const app_date = "2025/2/28",app_name = "ccb-simulator-dx",app_ver = "0.0.10"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -13,7 +13,7 @@ const cmt = document.getElementById("ccb_mode_title")
 app.style = ""
 screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2
-let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on
+let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 })
@@ -166,13 +166,22 @@ function over() {
     clearInterval(cmi)
     document.body.removeEventListener("click",ccb_click)
     document.getElementById("ccb_noti_title").style = "display:none"
+    const bgm = document.getElementById("bgm")
     if (cb_count) {
         document.getElementById("cet_txt").innerText = "您一共踩了"+cb_count+"次背！"
         document.getElementById("wow_2").play()
+        if (bgm_on && bgm_type) {
+            bgm.src = "assets/opus/bgm_wmc24_result.opus"
+            bgm.play()
+        }
     } else {
         document.getElementById("cet_txt").innerText = "踩背失败！"
         document.getElementById("screen4_elp").style = "left:calc(var(--ccb_font_size)*100)"
         document.getElementById("fail").play()
+        if (bgm_on && bgm_type) {
+            bgm.src = "assets/opus/bgm_wmc24_fail.opus"
+            bgm.play()
+        }
     }
     setTimeout(()=>{
         screen4.style.display = "none"
@@ -214,6 +223,11 @@ function reset() {
     document.getElementById("story1").currentTime = 0
     cmt.innerText = ""
     document.getElementById("us_notify").style.display = "block"
+    const bgm = document.getElementById("bgm")
+    if (bgm_on && bgm_type) {
+        bgm.src = "assets/opus/bgm_wmc24.opus"
+        bgm.play()
+    }
 }
 function play0() {
     clt_2bt.style.display = ""
@@ -225,11 +239,27 @@ function play0() {
 function play1() {
     ccb_game_mode = 0
     cmt.innerText = "经典模式"
+    if (bgm_type) {
+        const bgm = document.getElementById("bgm")
+        bgm.src = "assets/opus/bgm.opus"
+        bgm_type = 0
+        if (bgm_on) {
+            bgm.play()
+        }
+    }
     play()
 }
 function play2() {
     ccb_game_mode = 1
     cmt.innerText = "挑战模式"
+    if (!bgm_type) {
+        const bgm = document.getElementById("bgm")
+        bgm.src = "assets/opus/bgm_wmc24.opus"
+        bgm_type = 1
+        if (bgm_on) {
+            bgm.play()
+        }
+    }
     play()
 }
 function lct_value_ev() {
