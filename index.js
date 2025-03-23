@@ -1,4 +1,4 @@
-const app_date = "2025/2/28",app_name = "ccb-simulator-dx",app_ver = "0.0.10"
+const app_date = "2025/3/9",app_name = "ccb-simulator-dx",app_ver = "0.0.11"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -13,7 +13,7 @@ const cmt = document.getElementById("ccb_mode_title")
 app.style = ""
 screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2
-let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type
+let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 })
@@ -211,6 +211,7 @@ function reset() {
     screen1.style.display = ""
     clt_2bt.style.display = "none"
     play_ccb.style.display = ""
+    document.getElementById("cnp2_txt").style.display = "none"
     ccb_started=ccb_evl1=first_click_time=last_click_time=tps=cb_allow=cmi=null
     cb_count=score=ccb_cm_level=ccb_lc_doubt=0
     last10click=[]
@@ -331,4 +332,21 @@ function toggle_bgm() {
         b.currentTime = 0
     }
 }
+window.addEventListener("keydown",(e)=>{
+    let ct2 = document.getElementById("cnp2_txt")
+    if (!cb_allow) {
+        return
+    }
+    if (e.key == "c" && !cb_key_state) {
+        cb_key_state = 1
+        ccb_click()
+        ct2.style.display = "none"
+    } else if (e.key == "b" && cb_key_state) {
+        cb_key_state = 0
+        ccb_click()
+        ct2.style.display = "none"
+    } else {
+        ct2.style.display = ""
+    }
+})
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)

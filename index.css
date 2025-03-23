@@ -122,6 +122,10 @@ button {
 .score_show.slow {
     animation: ss_anim1 2s ease-out 1;
 }
+#cnp2_txt {
+    font-size: calc(var(--ccb_font_size)*.3);
+    animation: fadein .25s ease-in 1;
+}
 @media screen and (min-width: 800px) {
     :root {
         --ccb_font_size: 96px;
