@@ -26,6 +26,7 @@
                 <div id="clt_2bt" style="display:none">
                     <button id="play_ccb1" onclick="play1()">经典模式</button><br>
                     <button id="play_ccb2" onclick="play2()">挑战模式</button><br>
+                    <button id="play_ccb4" onclick="play3()" style="width: calc(var(--ccb_font_size)*3.4)">节拍器模式</button><br>
                     <button id="play_ccb3" onclick="show_s6()" style="display:none">换贴图</button>
                 </div>
             </div>
@@ -86,6 +87,7 @@
             </div>
             <button onclick="close_s6()">确定</button>
         </div>
+        <div id="cbbpm_visual"></div>
     </div>
     <div id="sounds">
         <audio src="assets/mp3/ccb.mp3" id="ccb1"></audio>
@@ -96,6 +98,7 @@
         <audio src="assets/mp3/fail.mp3" id="fail"></audio>
         <audio src="assets/mp3/wcsndm.mp3" id="wcsndm"></audio>
         <audio src="assets/opus/bgm.opus" id="bgm" loop="1"></audio>
+        <audio src="assets/mp3/clock.mp3" id="bpm_clock"></audio>
     </div>
 </body>
 <script src="index.js"></script>

@@ -1,4 +1,4 @@
-const app_date = "2025/3/9",app_name = "ccb-simulator-dx",app_ver = "0.0.11"
+const app_date = "2025/3/27",app_name = "ccb-simulator-dx",app_ver = "0.0.12"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -12,8 +12,9 @@ const play_ccb = document.getElementById("play_ccb")
 const cmt = document.getElementById("ccb_mode_title")
 app.style = ""
 screen1.style = ""
-let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2
-let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state
+let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2,ga_counter=0
+let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state,cb_bpm,cb_bpm_mode_regi_time,cb_bpm_mode_timeout,cb_bpm_mode_note_avail
+let cb_bpm_list = [120,128,140,150,160,180,190,200,210,220,240],cb_bpm_mode_res_list = [0,0,0,0,0]
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 })
@@ -47,6 +48,9 @@ function ccb_start() {
     screen2.style.display = "none"
     screen3.style.display = ""
     const img = document.getElementById("screen3_img")
+    if (ccb_game_mode == 2) {
+        cb_bpm = cb_bpm_list[Math.floor(Math.random()*(cb_bpm_list.length))]
+    }
     let a = setInterval(()=>{
         img.src = "assets/webp/elep_1.webp"
         setTimeout(()=>{
@@ -57,7 +61,13 @@ function ccb_start() {
         img.style = "left:calc(var(--ccb_font_size)*4)"
     },50)
     setTimeout(()=>{
-        document.getElementById("cnp_txt").innerText = "点击屏幕！"
+        let cnpt = ""
+        if (ccb_game_mode == 2) {
+            cnpt = "BPM: "+cb_bpm
+        } else {
+            cnpt = "点击屏幕！"
+        }
+        document.getElementById("cnp_txt").innerText = cnpt
         document.getElementById("ccb_noti_title").style = "display:block"
     },3500)
     setTimeout(()=>{
@@ -67,24 +77,36 @@ function ccb_start() {
     setTimeout(()=>{
         ccb_main()
     },4400)
+    if (ccb_game_mode == 2) {
+        setTimeout(()=>{gen_clock_sfx()},4400-1000/cb_bpm*60*4-10)
+        setTimeout(()=>{gen_clock_sfx()},4400-1000/cb_bpm*60*3-10)
+        setTimeout(()=>{gen_clock_sfx()},4400-1000/cb_bpm*60*2-10)
+        setTimeout(()=>{gen_clock_sfx()},4400-1000/cb_bpm*60*1-10)
+    }
 }
 function ccb_main() {
     cb_allow = 1
+    progress.value = 100
     screen3.style.display = "none"
     screen4.style.display = ""
     progress.style.display = ""
-    progress.value = 100
     const img = document.getElementById("screen4_elp")
     setTimeout(()=>{
         img.style = "bottom:0px"
     },50)
     ccb_evl1 = document.body.addEventListener("click",ccb_click)
-    cmi = setInterval(()=>{
+    if (ccb_game_mode != 2) {
+        cmi = setInterval(()=>{
         progress.value = progress.value - 1
-        if (progress.value <= 0) {
-            over()
-        }
-    },10)
+            if (progress.value <= 0) {
+                over()
+            }
+        },10)
+    } else {
+        cmi = setInterval(()=>{
+            c_bpm_rec()
+        },1000/cb_bpm*60)
+    }
 }
 function changecmil(ms,num) {
     clearInterval(cmi)
@@ -99,33 +121,48 @@ function ccb_click() {
     if (!cb_allow) {
         return
     }
-    if (!first_click_time) {
-        first_click_time = Date.now()
-        last_click_time = Date.now()
-        scorec(5)
-    } else {
-        let tm = Math.pow(last_click_time-Date.now()+1000,2)
-        if (ccb_game_mode == 1) {
-            lct_value_ev()
+    if (ccb_game_mode != 2) {
+        if (!first_click_time) {
+            first_click_time = Date.now()
+            last_click_time = Date.now()
+            scorec(5)
+        } else {
+            let tm = Math.pow(last_click_time-Date.now()+1000,2)
+            if (ccb_game_mode == 1) {
+                lct_value_ev()
+            }
+            last_click_time = Date.now()
+            scorec(Math.ceil(tm/200000))
+            tps = Math.floor(cb_count/(last_click_time - first_click_time)*10000)/10
+            document.getElementById("cet_txt3").innerText = "CPS: "+tps
         }
+        document.getElementById("cet_txt2").innerText = "CCB: "+score
+        progress.value += 40
+        ccb_click_regi()
+    } else {
         last_click_time = Date.now()
-        scorec(Math.ceil(tm/200000))
-        tps = Math.floor(cb_count/(last_click_time - first_click_time)*10000)/10
-        document.getElementById("cet_txt3").innerText = "CPS: "+tps
+        if (cb_bpm_mode_note_avail) {
+            clearTimeout(cb_bpm_mode_timeout)
+            cb_bpm_mode_note_avail = 0
+            let cbt_diff = last_click_time - cb_bpm_mode_regi_time
+            if (cbt_diff < -60) {
+                c_bpm_evaluate("fast")
+            } else if (cbt_diff < -30 && cbt_diff >= -60) {
+                c_bpm_evaluate("fast_good")
+            } else if (cbt_diff < -15 && cbt_diff >= -30) {
+                c_bpm_evaluate("fast_perf")
+            } else if (cbt_diff <= 15 && cbt_diff >= -15) {
+                c_bpm_evaluate("critical")
+            } else if (cbt_diff <= 30 && cbt_diff > 15) {
+                c_bpm_evaluate("late_perf")
+            } else if (cbt_diff <= 60 && cbt_diff > 30) {
+                c_bpm_evaluate("late_good")
+            } else if (cbt_diff > 60) {
+                c_bpm_evaluate("late")
+            }
+            ccb_click_regi()
+        }
     }
-    document.getElementById("cet_txt2").innerText = "CCB: "+score
-    const img = document.getElementById("screen4_elp")
-    const wow = document.getElementById("screen4_wow")
-    img.style = "bottom:10px;transition:none"
-    gen_audio_el("assets/mp3/wow_1.mp3")
-    wow.style = "display:block;transition:none"
-    setTimeout(()=>{
-        wow.style = "display:block;width:calc(var(--ccb_font_size)*25);left:calc(var(--ccb_font_size)*-7);bottom:calc(var(--ccb_font_size)*-4)"
-        img.style = "bottom:-10px;transition:.05s"
-    },2)
-    cb_count++
-    document.getElementById("cnp_txt").innerText = "踩背次数："+cb_count
-    progress.value += 40
     if (ccb_game_mode == 1) {
         if (score > 2500) {
             if (ccb_cm_level != 3) {
@@ -151,13 +188,29 @@ function ccb_click() {
         document.getElementById("wcsndm").play()
     }
 }
+function ccb_click_regi() {
+    const img = document.getElementById("screen4_elp")
+    const wow = document.getElementById("screen4_wow")
+    img.style = "bottom:10px;transition:none"
+    gen_audio_el("assets/mp3/wow_1.mp3")
+    wow.style = "display:block;transition:none"
+    setTimeout(()=>{
+        wow.style = "display:block;width:calc(var(--ccb_font_size)*25);left:calc(var(--ccb_font_size)*-7);bottom:calc(var(--ccb_font_size)*-4)"
+        img.style = "bottom:-10px;transition:.05s"
+    },2)
+    cb_count++
+    document.getElementById("cnp_txt").innerText = "踩背次数："+cb_count
+}
 function gen_audio_el(url,removeafter) {
     const el = document.createElement("audio")
     el.src = url
+    ga_counter++
+    el.id = "genaud_"+ga_counter
     document.body.appendChild(el)
     el.play()
     setTimeout(()=>{
         document.body.removeChild(el)
+        ga_counter--
     },(removeafter || 1000))
 }
 function over() {
@@ -173,6 +226,9 @@ function over() {
         if (bgm_on && bgm_type) {
             bgm.src = "assets/opus/bgm_wmc24_result.opus"
             bgm.play()
+        }
+        if (ccb_game_mode == 2) {
+            document.getElementById("cet_txt2").innerHTML = "CRITICAL: "+cb_bpm_mode_res_list[0]+"<br>PERFECT: "+cb_bpm_mode_res_list[1]+"<br>GOOD: "+cb_bpm_mode_res_list[2]+"<br>LAME: "+cb_bpm_mode_res_list[3]+"<br>MISS: "+cb_bpm_mode_res_list[4]
         }
     } else {
         document.getElementById("cet_txt").innerText = "踩背失败！"
@@ -229,6 +285,7 @@ function reset() {
         bgm.src = "assets/opus/bgm_wmc24.opus"
         bgm.play()
     }
+    cb_bpm_mode_res_list = [0,0,0,0,0]
 }
 function play0() {
     clt_2bt.style.display = ""
@@ -240,7 +297,30 @@ function play0() {
 function play1() {
     ccb_game_mode = 0
     cmt.innerText = "经典模式"
-    if (bgm_type) {
+    bgm_mode_switch()
+    play()
+}
+function play2() {
+    ccb_game_mode = 1
+    cmt.innerText = "挑战模式"
+    bgm_mode_switch()
+    play()
+}
+function play3() {
+    ccb_game_mode = 2
+    cmt.innerText = "节拍器模式（随机BPM）"
+    bgm_mode_switch(1)
+    play()
+}
+function bgm_mode_switch(mode){
+    if (mode && !bgm_type) {
+        const bgm = document.getElementById("bgm")
+        bgm.src = "assets/opus/bgm_wmc24.opus"
+        bgm_type = 1
+        if (bgm_on) {
+            bgm.play()
+        }
+    } else if (!mode && bgm_type) {
         const bgm = document.getElementById("bgm")
         bgm.src = "assets/opus/bgm.opus"
         bgm_type = 0
@@ -248,20 +328,6 @@ function play1() {
             bgm.play()
         }
     }
-    play()
-}
-function play2() {
-    ccb_game_mode = 1
-    cmt.innerText = "挑战模式"
-    if (!bgm_type) {
-        const bgm = document.getElementById("bgm")
-        bgm.src = "assets/opus/bgm_wmc24.opus"
-        bgm_type = 1
-        if (bgm_on) {
-            bgm.play()
-        }
-    }
-    play()
 }
 function lct_value_ev() {
     if (last10click.length < 10) {
@@ -349,4 +415,71 @@ window.addEventListener("keydown",(e)=>{
         ct2.style.display = ""
     }
 })
+function c_bpm_rec() {
+    cb_bpm_mode_regi_time = Date.now()+120
+    cb_bpm_mode_note_avail = 1
+    cb_bpm_mode_timeout = setTimeout(()=>{
+        cb_bpm_mode_note_avail = 0
+        c_bpm_evaluate("miss")
+    },240)
+    setTimeout(()=>{gen_clock_sfx()},110)
+    let cbm = document.getElementById("cbbpm_visual")
+    setTimeout(()=>{cbm.style.animation = "cbv_anim1 .24s cubic-bezier(0,.6,0,1)"},120)
+    setTimeout(()=>{cbm.style = ""},360)
+}
+function c_bpm_evaluate(res) {
+    switch(res) {
+        case "miss":
+            progress.value -= 15
+            genscorec_text("MISS")
+            cb_bpm_mode_res_list[4]++
+            break
+        case "fast":
+            progress.value -= 7
+            genscorec_text("FAST")
+            cb_bpm_mode_res_list[3]++
+            break
+        case "fast_good":
+            progress.value -= 3
+            genscorec_text("FAST GOOD")
+            cb_bpm_mode_res_list[2]++
+            break
+        case "fast_perf":
+            progress.value += 10
+            genscorec_text("PERFECT")
+            cb_bpm_mode_res_list[1]++
+            break
+        case "critical":
+            progress.value += 20
+            genscorec_text("CRITICAL PERFECT")
+            cb_bpm_mode_res_list[0]++
+            break
+        case "late_perf":
+            progress.value += 10
+            genscorec_text("PERFECT")
+            cb_bpm_mode_res_list[1]++
+            break
+        case "late_good":
+            progress.value -= 3
+            genscorec_text("LATE GOOD")
+            cb_bpm_mode_res_list[2]++
+            break
+        case "late":
+            progress.value -= 7
+            genscorec_text("LATE")
+            cb_bpm_mode_res_list[3]++
+            break
+    }
+    if (progress.value <= 0) {
+        over()
+    }
+}
+function gen_clock_sfx() {
+    let c = document.getElementById("bpm_clock")
+    c.currentTime = 0
+    c.play()
+    let w = document.getElementById("genaud_"+ga_counter)
+    w.volume = .07
+    setTimeout(()=>{w.volume = 1},150)
+}
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)

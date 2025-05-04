@@ -126,6 +126,17 @@ button {
     font-size: calc(var(--ccb_font_size)*.3);
     animation: fadein .25s ease-in 1;
 }
+#cbbpm_visual {
+    position: absolute;
+    left: calc(50% - var(--ccb_font_size)*1.5);
+    top: calc(50% - var(--ccb_font_size)*1.5);
+    width: calc(var(--ccb_font_size)*3);
+    height: calc(var(--ccb_font_size)*3);
+    border-radius: calc(var(--ccb_font_size)*1.5);
+    background-color: #fff;
+    opacity: 0;
+    pointer-events: none;
+}
 @media screen and (min-width: 800px) {
     :root {
         --ccb_font_size: 96px;
@@ -158,5 +169,15 @@ button {
     to {
         opacity: 0;
         top: 0px;
+    }
+}
+@keyframes cbv_anim1 {
+    from {
+        opacity: 1;
+        transform: scale(.4);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1);
     }
 }
