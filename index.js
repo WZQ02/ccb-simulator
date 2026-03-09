@@ -1,4 +1,4 @@
-const app_date = "2025/3/27",app_name = "ccb-simulator-dx",app_ver = "0.0.12"
+const app_date = "2025/7/17",app_name = "ccb-simulator-dx",app_ver = "0.0.14"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -224,7 +224,7 @@ function over() {
         document.getElementById("cet_txt").innerText = "您一共踩了"+cb_count+"次背！"
         document.getElementById("wow_2").play()
         if (bgm_on && bgm_type) {
-            bgm.src = "assets/opus/bgm_wmc24_result.opus"
+            bgm.src = "assets/opus/bgm_wmc25_result.opus"
             bgm.play()
         }
         if (ccb_game_mode == 2) {
@@ -235,7 +235,7 @@ function over() {
         document.getElementById("screen4_elp").style = "left:calc(var(--ccb_font_size)*100)"
         document.getElementById("fail").play()
         if (bgm_on && bgm_type) {
-            bgm.src = "assets/opus/bgm_wmc24_fail.opus"
+            bgm.src = "assets/opus/bgm_wmc25_fail.opus"
             bgm.play()
         }
     }
@@ -282,7 +282,7 @@ function reset() {
     document.getElementById("us_notify").style.display = "block"
     const bgm = document.getElementById("bgm")
     if (bgm_on && bgm_type) {
-        bgm.src = "assets/opus/bgm_wmc24.opus"
+        bgm.src = "assets/opus/bgm_wmc25.opus"
         bgm.play()
     }
     cb_bpm_mode_res_list = [0,0,0,0,0]
@@ -315,7 +315,7 @@ function play3() {
 function bgm_mode_switch(mode){
     if (mode && !bgm_type) {
         const bgm = document.getElementById("bgm")
-        bgm.src = "assets/opus/bgm_wmc24.opus"
+        bgm.src = "assets/opus/bgm_wmc25.opus"
         bgm_type = 1
         if (bgm_on) {
             bgm.play()
@@ -481,5 +481,8 @@ function gen_clock_sfx() {
     let w = document.getElementById("genaud_"+ga_counter)
     w.volume = .07
     setTimeout(()=>{w.volume = 1},150)
+}
+if (window.matchMedia("(dynamic-range: high)").matches) {
+    document.getElementById("screen4_wow").src = "assets/png/wow_hdr.png"
 }
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)

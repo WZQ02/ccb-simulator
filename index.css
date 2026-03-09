@@ -2,6 +2,7 @@
     font-weight: bold;
     font-family: Arial,"黑体";
     overflow: hidden;
+    touch-action: manipulation;
 }
 :root {
     --ccb_font_size: 12vw;
