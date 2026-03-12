@@ -27,7 +27,7 @@
                     <button id="play_ccb1" onclick="play1()">经典模式</button><br>
                     <button id="play_ccb2" onclick="play2()">挑战模式</button><br>
                     <!--<button id="play_ccb4" onclick="play3()" style="width: calc(var(--ccb_font_size)*3.4)">节拍器模式</button><br>-->
-                    <button id="play_ccb3" onclick="show_s6()" style="display:none">换贴图</button>
+                    <button id="play_ccb3" onclick="show_s6()">换贴图</button>
                 </div>
             </div>
             <div id="us_notify" style="position:absolute;top:0px;right:0px;font-size:16px;display:none">
@@ -83,7 +83,34 @@
                     <img id="screen4_wow_pre" src="assets/webp/wow.webp" width="300"/>
                 </label>
                 <input type="file" id="s4_im_upl" style="display:none">
-                <input type="file" id="s4_wo_upl" style="display:none">
+                <input type="file" id="s4_wo_upl" style="display:none"><br>
+                <button onclick="show_all_textures()" style="font-size:calc(var(--ccb_font_size)*.4)">显示所有贴图</button>
+                <div id="more_textures" style="display:none">
+                    <br>
+                    <label for="elep1_upl">
+                        <span>大象1</span><br>
+                        <img id="elep1_pre" src="assets/webp/elep_1.webp" width="300"/>
+                    </label>
+                    <br>
+                    <label for="elep2_upl">
+                        <span>大象2</span><br>
+                        <img id="elep2_pre" src="assets/webp/elep_2.webp" width="300"/>
+                    </label>
+                    <br>
+                    <label for="scene1_upl">
+                        <span>过场动画1</span><br>
+                        <img id="scene1_pre" src="assets/webp/scene_1.webp" width="300"/>
+                    </label>
+                    <br>
+                    <label for="scene2_upl">
+                        <span>过场动画2</span><br>
+                        <img id="scene2_pre" src="assets/webp/scene_2.webp" width="300"/>
+                    </label>
+                    <input type="file" id="elep1_upl" style="display:none">
+                    <input type="file" id="elep2_upl" style="display:none">
+                    <input type="file" id="scene1_upl" style="display:none">
+                    <input type="file" id="scene2_upl" style="display:none">
+                </div>
             </div>
             <button onclick="close_s6()">确定</button>
         </div>

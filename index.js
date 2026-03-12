@@ -14,6 +14,7 @@ app.style = ""
 screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2,ga_counter=0
 let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state,cb_bpm,cb_bpm_mode_regi_time,cb_bpm_mode_timeout,cb_bpm_mode_note_avail
+let custom_elep1_url = null, custom_elep2_url = null, custom_scene1_url = null, custom_scene2_url = null, custom_s4_im_url = null, custom_s4_wo_url = null
 let cb_bpm_list = [120,128,140,150,160,180,190,200,210,220,240],cb_bpm_mode_res_list = [0,0,0,0,0]
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
@@ -23,10 +24,10 @@ function play() {
     screen1.style.display = "none"
     screen2.style.display = ""
     const img = document.getElementById("screen2_img")
-    img.src = "assets/webp/scene_1.webp"
+    img.src = custom_scene1_url ? custom_scene1_url : "assets/webp/scene_1.webp"
     document.getElementById("story1").play()
     ptm1 = setTimeout(()=>{
-        img.src = "assets/webp/scene_2.webp"
+        img.src = custom_scene2_url ? custom_scene2_url : "assets/webp/scene_2.webp"
     },3600)
     ptm2 = setTimeout(()=>{
         ccb_start()
@@ -52,9 +53,9 @@ function ccb_start() {
         cb_bpm = cb_bpm_list[Math.floor(Math.random()*(cb_bpm_list.length))]
     }
     let a = setInterval(()=>{
-        img.src = "assets/webp/elep_1.webp"
+        img.src = custom_elep1_url ? custom_elep1_url : "assets/webp/elep_1.webp"
         setTimeout(()=>{
-            img.src = "assets/webp/elep_2.webp"
+            img.src = custom_elep2_url ? custom_elep2_url : "assets/webp/elep_2.webp"
         },100)
     },200)
     setTimeout(()=>{
@@ -91,6 +92,9 @@ function ccb_main() {
     screen4.style.display = ""
     progress.style.display = ""
     const img = document.getElementById("screen4_elp")
+    const bg_img = document.getElementById("screen4_img")
+    bg_img.src = custom_scene3_url ? custom_scene3_url : "assets/webp/scene_3.webp"
+    img.src = custom_elep2_url ? custom_elep2_url : "assets/webp/elep_2.webp"
     setTimeout(()=>{
         img.style = "bottom:0px"
     },50)
@@ -191,6 +195,7 @@ function ccb_click() {
 function ccb_click_regi() {
     const img = document.getElementById("screen4_elp")
     const wow = document.getElementById("screen4_wow")
+    wow.src = custom_s4_wo_url ? custom_s4_wo_url : "assets/webp/wow.webp"
     img.style = "bottom:10px;transition:none"
     gen_audio_el("assets/mp3/wow_1.mp3")
     wow.style = "display:block;transition:none"
@@ -373,9 +378,23 @@ function handlefile(file,target) {
     }
     const file_url = window.URL.createObjectURL(file)
     if (target == "s4_im") {
-        document.getElementById("screen4_img_pre").src = document.getElementById("screen4_img").src = file_url
-    } else {
-        document.getElementById("screen4_wow_pre").src = document.getElementById("screen4_wow").src = file_url
+        document.getElementById("screen4_img_pre").src = file_url
+        custom_s4_im_url = file_url
+    } else if (target == "s4_wo") {
+        document.getElementById("screen4_wow_pre").src = file_url
+        custom_s4_wo_url = file_url
+    } else if (target == "elep1") {
+        document.getElementById("elep1_pre").src = file_url
+        custom_elep1_url = file_url
+    } else if (target == "elep2") {
+        document.getElementById("elep2_pre").src = file_url
+        custom_elep2_url = file_url
+    } else if (target == "scene1") {
+        document.getElementById("scene1_pre").src = file_url
+        custom_scene1_url = file_url
+    } else if (target == "scene2") {
+        document.getElementById("scene2_pre").src = file_url
+        custom_scene2_url = file_url
     }
 }
 document.getElementById("s4_im_upl").addEventListener('change',function(e){
@@ -384,6 +403,27 @@ document.getElementById("s4_im_upl").addEventListener('change',function(e){
 document.getElementById("s4_wo_upl").addEventListener('change',function(e){
     handlefile(e.target.files[0],"s4_wo")
 })
+document.getElementById("elep1_upl").addEventListener('change',function(e){
+    handlefile(e.target.files[0],"elep1")
+})
+document.getElementById("elep2_upl").addEventListener('change',function(e){
+    handlefile(e.target.files[0],"elep2")
+})
+document.getElementById("scene1_upl").addEventListener('change',function(e){
+    handlefile(e.target.files[0],"scene1")
+})
+document.getElementById("scene2_upl").addEventListener('change',function(e){
+    handlefile(e.target.files[0],"scene2")
+})
+function show_all_textures() {
+    const moreTexturesDiv = document.getElementById("more_textures");
+    if (moreTexturesDiv.style.display === "none") {
+        moreTexturesDiv.style.display = "block";
+    } else {
+        moreTexturesDiv.style.display = "none";
+    }
+}
+
 function toggle_bgm() {
     const c = document.getElementById("bt_icon")
     const b = document.getElementById("bgm")
