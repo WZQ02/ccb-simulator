@@ -1,4 +1,4 @@
-const app_date = "2025/7/17",app_name = "ccb-simulator-dx",app_ver = "0.0.14"
+const app_date = "2026/3/12",app_name = "ccb-simulator-dx",app_ver = "0.0.16"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -14,7 +14,8 @@ app.style = ""
 screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2,ga_counter=0
 let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state,cb_bpm,cb_bpm_mode_regi_time,cb_bpm_mode_timeout,cb_bpm_mode_note_avail
-let custom_elep1_url = null, custom_elep2_url = null, custom_scene1_url = null, custom_scene2_url = null, custom_s4_im_url = null, custom_s4_wo_url = null
+let anti_cheat_diff_threshold = 50, anti_cheat_doubt_limit = 5
+let custom_elep1_url = null, custom_elep2_url = null, custom_scene1_url = null, custom_scene2_url = null, custom_scene3_url = null, custom_s4_im_url = null, custom_s4_wo_url = null
 let cb_bpm_list = [120,128,140,150,160,180,190,200,210,220,240],cb_bpm_mode_res_list = [0,0,0,0,0]
 document.body.addEventListener("contextmenu", (e) => {
     e.preventDefault();
@@ -347,9 +348,9 @@ function lct_value_ev() {
         for (i=0;i<10;i++) {
             l1c_diff += Math.abs(last10click[i] - l1c_avg)
         }
-        if (l1c_diff < 50) {
+        if (l1c_diff < anti_cheat_diff_threshold) {
             ccb_lc_doubt++
-            if (ccb_lc_doubt > 5) {
+            if (ccb_lc_doubt > anti_cheat_doubt_limit) {
                 over()
                 document.getElementById("cet_txt").innerText = "你是不是开了！？"
                 console.log("挑战模式还想作弊？呵呵！")
@@ -395,6 +396,9 @@ function handlefile(file,target) {
     } else if (target == "scene2") {
         document.getElementById("scene2_pre").src = file_url
         custom_scene2_url = file_url
+    } else if (target == "scene3") {
+        document.getElementById("scene3_pre").src = file_url
+        custom_scene3_url = file_url
     }
 }
 document.getElementById("s4_im_upl").addEventListener('change',function(e){
@@ -417,10 +421,13 @@ document.getElementById("scene2_upl").addEventListener('change',function(e){
 })
 function show_all_textures() {
     const moreTexturesDiv = document.getElementById("more_textures");
+    const s4_showallt = document.getElementById("s4_showallt");
     if (moreTexturesDiv.style.display === "none") {
         moreTexturesDiv.style.display = "block";
+        s4_showallt.innerText = "隐藏其他贴图"
     } else {
         moreTexturesDiv.style.display = "none";
+        s4_showallt.innerText = "显示所有贴图"
     }
 }
 
@@ -526,3 +533,11 @@ if (window.matchMedia("(dynamic-range: high)").matches) {
     document.getElementById("screen4_wow").src = "assets/png/wow_hdr.png"
 }
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)
+
+function openCommentModal() {
+    document.getElementById("comment_modal_backdrop").style.display = "flex";
+}
+
+function closeCommentModal() {
+    document.getElementById("comment_modal_backdrop").style.display = "none";
+}

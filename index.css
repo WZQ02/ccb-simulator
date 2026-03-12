@@ -182,3 +182,59 @@ button {
         transform: scale(1);
     }
 }
+
+#comment_modal_backdrop {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9999; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+#comment_modal_content {
+    background-color: #fefefe; /* Default light background */
+    margin: auto;
+    padding: 12px;
+    border: 1px solid #888;
+    width: 85%; /* Could be more or less, depending on screen size */
+    max-width: 1024px; /* Max width for larger screens */
+    height: 85%;
+    max-height: 768px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (prefers-color-scheme: dark) {
+    #comment_modal_content {
+        background-color: #0a0a0a; /* Dark background for dark theme */
+        border: 1px solid #555;
+    }
+}
+
+#comment_modal_content button {
+    align-self: flex-end;
+    margin-bottom: 10px;
+    background-color: #f44;
+    color: white;
+    border: none;
+    padding: 5px 10px; /* Smaller padding */
+    cursor: pointer;
+    font-size: 14px; /* Smaller font size */
+    border-radius: 5px;
+    width: auto; /* Ensure no global width overrides */
+    height: auto; /* Ensure no global height overrides */
+}
+
+#comment_modal_content iframe {
+    flex-grow: 1; /* Take up remaining space */
+    width: 100%;
+    height: 100%;
+    border: none;
+}

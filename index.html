@@ -56,7 +56,7 @@
                 <button onclick="reset()">重踩</button>
                 <div style="font-size:16px">
                     <br>
-                    <a style="color:#fff" href="https://wzq02.top/">前往主站</a> | <a style="color:#fff" href="https://github.com/WZQ02/ccb-simulator">源代码</a> | <a style="color:#fff" href="https://wzq02.top/comment/?type=ccbsimu">留言</a>
+                    <a style="color:#fff" href="https://wzq02.top/">前往主站</a> | <a style="color:#fff" href="https://github.com/WZQ02/ccb-simulator">源代码</a> | <a style="color:#fff" id="comment_btn" onclick="openCommentModal()">留言</a>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                 </label>
                 <input type="file" id="s4_im_upl" style="display:none">
                 <input type="file" id="s4_wo_upl" style="display:none"><br>
-                <button onclick="show_all_textures()" style="font-size:calc(var(--ccb_font_size)*.4)">显示所有贴图</button>
+                <button onclick="show_all_textures()" id="s4_showallt" style="font-size:calc(var(--ccb_font_size)*.4)">显示所有贴图</button>
                 <div id="more_textures" style="display:none">
                     <br>
                     <label for="elep1_upl">
@@ -126,6 +126,12 @@
         <audio src="assets/mp3/wcsndm.mp3" id="wcsndm"></audio>
         <audio src="assets/opus/bgm.opus" id="bgm" loop="1"></audio>
         <audio src="assets/mp3/clock.mp3" id="bpm_clock"></audio>
+    </div>
+    <div id="comment_modal_backdrop">
+        <div id="comment_modal_content">
+            <button onclick="closeCommentModal()">关闭</button>
+            <iframe id="comment_iframe" src="https://wzq02.top/comment/?type=ccbsimu"></iframe>
+        </div>
     </div>
 </body>
 <script src="index.js"></script>
