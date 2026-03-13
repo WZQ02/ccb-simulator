@@ -39,6 +39,11 @@ button {
     border-radius: 8px;
     font-size: calc(var(--ccb_font_size)*.6);
 }
+button.smaller {
+    width: calc(var(--ccb_font_size)*2);
+    height: calc(var(--ccb_font_size)*.5);
+    font-size: calc(var(--ccb_font_size)*.4);
+}
 #screen2_img {
     max-width: 100%;
     height: fit-content;

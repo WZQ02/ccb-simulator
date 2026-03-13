@@ -53,10 +53,10 @@
             <div id="ccb_end_title"><span id="cet_txt"></span><br>
                 <span id="cet_txt2"></span><br>
                 <span id="cet_txt3"></span><br>
-                <button onclick="reset()">重踩</button>
+                <button onclick="reset()">重踩</button><br><button id="show_leaderboard_btn" onclick="change_screen(7); showLeaderboard(current_mode, current_criteria);">排行榜</button>
                 <div style="font-size:16px">
                     <br>
-                    <a style="color:#fff" href="https://wzq02.top/">前往主站</a> | <a style="color:#fff" href="https://github.com/WZQ02/ccb-simulator">源代码</a> | <a style="color:#fff" id="comment_btn" onclick="openCommentModal()">留言</a>
+                    <a style="color:#fff" href="https://wzq02.top/">前往主站</a> | <a style="color:#fff" href="https://github.com/WZQ02/ccb-simulator">源代码</a> | <a style="color:#fff;text-decoration:underline;" id="comment_btn" onclick="openCommentModal()">留言</a>
                 </div>
             </div>
         </div>
@@ -113,6 +113,44 @@
                 </div>
             </div>
             <button onclick="close_s6()">确定</button>
+        </div>
+        <!-- 排行榜界面 -->
+        <div id="ccb_screen_7" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 20px; background-color: #000;">
+            <h2 id="ccb_s7_title" style="color:#ff7; font-size: max(6vw, 24px); margin-bottom: 20px;">踩踩背排行榜</h2>
+
+            <div style="margin-bottom: 15px;">
+                <button onclick="showLeaderboard('classic', current_criteria)" class="smaller">经典模式</button>
+                <button onclick="showLeaderboard('challenge', current_criteria)" class="smaller">挑战模式</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <button onclick="showLeaderboard(current_mode, 'ccb_score')" class="smaller">ccb分数</button>
+                <button onclick="showLeaderboard(current_mode, 'treads_count')" class="smaller">踩背次数</button>
+                <button onclick="showLeaderboard(current_mode, 'cps')" class="smaller">CPS</button>
+            </div>
+
+            <table id="leaderboard_table" style="width: 90%; max-width: 800px; border-collapse: collapse; color: #fff;">
+                <thead>
+                    <tr style="background-color: #333;">
+                        <th style="padding: 10px; border: 1px solid #555;">排名</th>
+                        <th style="padding: 10px; border: 1px solid #555;">玩家</th>
+                        <th id="leaderboard_criteria_header" style="padding: 10px; border: 1px solid #555;">分数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 排行榜数据将通过JavaScript填充 -->
+                </tbody>
+            </table>
+            <button onclick="change_screen(5)" style="margin-top: 20px;" class="smaller">返回</button>
+        </div>
+
+        <!-- 用户名输入弹窗 -->
+        <div id="ccb_screen_8" style="display:none; flex-direction:column; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); z-index:1000;">
+            <div style="background-color: #333; padding: 30px; border-radius: 10px; text-align: center; color: #fff;">
+                <p style="font-size: 1.2em; margin-bottom: 20px;">请输入您的名字以加入排行榜：</p>
+                <input type="text" id="username_input" placeholder="您的名字" style="padding: 10px; font-size: 1em; width: 80%; max-width: 300px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #555; background-color: #222; color: #fff;">
+                <button onclick="submitUsername()" style="padding: 10px 20px; font-size: 1em;">确认</button>
+            </div>
         </div>
         <div id="cbbpm_visual"></div>
     </div>

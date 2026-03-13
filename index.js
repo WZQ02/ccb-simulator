@@ -1,4 +1,4 @@
-const app_date = "2026/3/12",app_name = "ccb-simulator-dx",app_ver = "0.0.16"
+const app_date = "2026/3/13",app_name = "ccb-simulator-dx",app_ver = "0.0.16"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -15,6 +15,99 @@ screen1.style = ""
 let ccb_started,ccb_evl1,cb_count=0,first_click_time,last_click_time,score=0,tps,cb_allow,cmi,ptm1,ptm2,ga_counter=0
 let ccb_game_mode,ccb_cm_level,last10click=[],ccb_lc_doubt,first_cb=0,bgm_on,bgm_type,cb_key_state,cb_bpm,cb_bpm_mode_regi_time,cb_bpm_mode_timeout,cb_bpm_mode_note_avail
 let anti_cheat_diff_threshold = 50, anti_cheat_doubt_limit = 5
+
+// Leaderboard state variables
+let current_mode = 'classic';
+let current_criteria = 'ccb_score';
+
+// User management for leaderboard
+let username_global = localStorage.getItem('ccb_username'); // Using a global variable for persistence
+
+let resolveUsernamePromise; // Used to resolve the promise when username is submitted
+
+/**
+ * Retrieves the username. If not set, displays a modal for user input.
+ * @returns {Promise<string>} A promise that resolves with the username once it's set.
+ */
+function getUsername() {
+    if (username_global) {
+        return Promise.resolve(username_global);
+    }
+
+    // If username is not set, show the input modal (ccb_screen_8)
+    // The change_screen(8) function handles hiding other screens and showing this one.
+    if (score) {
+        change_screen(8);
+    }
+
+    // Return a promise that will be resolved once the user submits their username
+    return new Promise(resolve => {
+        resolveUsernamePromise = resolve;
+    });
+}
+
+/**
+ * Handles the submission of the username from the input modal.
+ */
+function submitUsername() {
+    const usernameInput = document.getElementById('username_input');
+    const newUsername = usernameInput.value.trim();
+
+    if (!newUsername) {
+        alert("名字不能为空，请重新输入。");
+        return;
+    }
+
+    username_global = newUsername; // Update the global username variable
+    localStorage.setItem('ccb_username', username_global); // Save to local storage
+
+    // Hide the username input screen and return to the main screen (or the previous screen logic would be here)
+    // Hide the username input screen
+    document.getElementById('ccb_screen_8').style.display = 'none'; // Explicitly hide the modal
+    usernameInput.value = ''; // Clear the input field
+
+    // Resolve the promise that was returned by getUsername()
+    if (resolveUsernamePromise) {
+        resolveUsernamePromise(username_global);
+        resolveUsernamePromise = null; // Reset the resolver for future calls
+    }
+    change_screen(5)
+}
+
+// Function to submit game results to the backend
+async function submitGameResult(mode, ccb_score, treads_count, cps) {
+    const user = await getUsername(); // Ensure username is set
+    if (!user) {
+        console.error("Username not set, cannot submit score.");
+        return;
+    }
+
+    try {
+        const response = await fetch('https://api.wzq02.top/ccb/scores/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: user,
+                mode: mode,
+                ccb_score: ccb_score,
+                treads_count: treads_count,
+                cps: cps
+            }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            console.log("Score submitted successfully:", result);
+        } else {
+            console.error("Error submitting score:", result.error);
+        }
+    } catch (error) {
+        console.error("Network error while submitting score:", error);
+    }
+}
+
 let custom_elep1_url = null, custom_elep2_url = null, custom_scene1_url = null, custom_scene2_url = null, custom_scene3_url = null, custom_s4_im_url = null, custom_s4_wo_url = null
 let cb_bpm_list = [120,128,140,150,160,180,190,200,210,220,240],cb_bpm_mode_res_list = [0,0,0,0,0]
 document.body.addEventListener("contextmenu", (e) => {
@@ -249,7 +342,110 @@ function over() {
         screen4.style.display = "none"
         screen5.style.display = ""
     },1000)
+
+    // Automatically submit score after game ends
+    let gameMode = (ccb_game_mode === 0) ? 'classic' : 'challenge';
+    let finalCps = tps || 0; // Ensure tps is 0 if undefined or null
+    submitGameResult(gameMode, score, cb_count, finalCps);
 }
+
+// Function to fetch and display leaderboard data
+async function showLeaderboard(mode, criteria) {
+    getUsername(); // Ensure user has a name before showing leaderboard
+
+    current_mode = mode;
+    current_criteria = criteria;
+
+    // Update header text based on criteria
+    const criteriaHeader = document.getElementById('leaderboard_criteria_header');
+    if (criteriaHeader) {
+        switch (criteria) {
+            case 'ccb_score':
+                criteriaHeader.textContent = 'ccb分数';
+                break;
+            case 'treads_count':
+                criteriaHeader.textContent = '踩背次数';
+                break;
+            case 'cps':
+                criteriaHeader.textContent = 'CPS';
+                break;
+        }
+    }
+
+    try {
+        const response = await fetch(`https://api.wzq02.top/ccb/leaderboard?mode=${mode}&criteria=${criteria}`);
+        const data = await response.json();
+
+        const tbody = document.querySelector('#leaderboard_table tbody');
+        tbody.innerHTML = ''; // Clear existing data
+
+        if (data.error) {
+            const row = tbody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 3;
+            cell.textContent = `Error: ${data.error}`;
+            cell.style.textAlign = 'center';
+            cell.style.color = 'red';
+            return;
+        }
+
+        if (data.length === 0) {
+            const row = tbody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 3;
+            cell.textContent = '暂无数据';
+            cell.style.textAlign = 'center';
+            return;
+        }
+
+        data.forEach((entry, index) => {
+            const row = tbody.insertRow();
+            row.style.backgroundColor = index % 2 === 0 ? '#222' : '#1a1a1a';
+            row.style.color = '#fff';
+            row.style.borderBottom = '1px solid #333';
+
+            const rankCell = row.insertCell();
+            rankCell.textContent = index + 1;
+            rankCell.style.padding = '10px';
+            rankCell.style.border = '1px solid #555';
+
+            const usernameCell = row.insertCell();
+            usernameCell.textContent = entry.username;
+            usernameCell.style.padding = '10px';
+            usernameCell.style.border = '1px solid #555';
+
+            const scoreCell = row.insertCell();
+            let displayValue;
+            switch (criteria) {
+                case 'ccb_score':
+                    displayValue = entry.ccb_score;
+                    break;
+                case 'treads_count':
+                    displayValue = entry.treads_count;
+                    break;
+                case 'cps':
+                    displayValue = entry.cps.toFixed(2);
+                    break;
+                default:
+                    displayValue = 'N/A';
+            }
+            scoreCell.textContent = displayValue;
+            scoreCell.style.padding = '10px';
+            scoreCell.style.border = '1px solid #555';
+        });
+    } catch (error) {
+        console.error("Network error fetching leaderboard:", error);
+        const tbody = document.querySelector('#leaderboard_table tbody');
+        tbody.innerHTML = '';
+        const row = tbody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 3;
+        cell.textContent = '加载排行榜失败，请检查网络或稍后再试。';
+        cell.style.textAlign = 'center';
+        cell.style.color = 'red';
+    }
+}
+
 function scorec(value) {
     score += value
     genscorec_text("+"+value)
@@ -540,4 +736,20 @@ function openCommentModal() {
 
 function closeCommentModal() {
     document.getElementById("comment_modal_backdrop").style.display = "none";
+}
+
+// Function to change visible screens
+function change_screen(screen_num) {
+    // Hide all screens first
+    document.getElementById("ccb_screen_1").style.display = "none";
+    document.getElementById("ccb_screen_2").style.display = "none";
+    document.getElementById("ccb_screen_3").style.display = "none";
+    document.getElementById("ccb_screen_4").style.display = "none";
+    document.getElementById("ccb_screen_5").style.display = "none";
+    document.getElementById("ccb_screen_6").style.display = "none";
+    document.getElementById("ccb_screen_7").style.display = "none"; // New leaderboard screen
+    document.getElementById("ccb_screen_8").style.display = "none"; // New username input screen
+
+    // Show the target screen
+    document.getElementById(`ccb_screen_${screen_num}`).style.display = "block";
 }
