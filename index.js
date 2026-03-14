@@ -1,4 +1,5 @@
-const app_date = "2026/3/13",app_name = "ccb-simulator-dx",app_ver = "0.0.16"
+//fun fact: 新增的排行榜功能代码是AI写的
+const app_date = "2026/3/14",app_name = "ccb-simulator-dx",app_ver = "0.0.17"
 const app = document.getElementById("ccb_app")
 const screen1 = document.getElementById("ccb_screen_1")
 const screen2 = document.getElementById("ccb_screen_2")
@@ -54,8 +55,8 @@ function submitUsername() {
     const newUsername = usernameInput.value.trim();
 
     if (!newUsername) {
-        alert("名字不能为空，请重新输入。");
-        return;
+        document.getElementById("ccb_s8_txt1").innerText = "名字不能为空，请重新输入。"
+        return
     }
 
     username_global = newUsername; // Update the global username variable
@@ -107,6 +108,7 @@ async function submitGameResult(mode, ccb_score, treads_count, cps) {
         console.error("Network error while submitting score:", error);
     }
 }
+let wow_ori_src = "assets/webp/wow.webp"
 
 let custom_elep1_url = null, custom_elep2_url = null, custom_scene1_url = null, custom_scene2_url = null, custom_scene3_url = null, custom_s4_im_url = null, custom_s4_wo_url = null
 let cb_bpm_list = [120,128,140,150,160,180,190,200,210,220,240],cb_bpm_mode_res_list = [0,0,0,0,0]
@@ -289,7 +291,7 @@ function ccb_click() {
 function ccb_click_regi() {
     const img = document.getElementById("screen4_elp")
     const wow = document.getElementById("screen4_wow")
-    wow.src = custom_s4_wo_url ? custom_s4_wo_url : "assets/webp/wow.webp"
+    wow.src = custom_s4_wo_url ? custom_s4_wo_url : wow_ori_src
     img.style = "bottom:10px;transition:none"
     gen_audio_el("assets/mp3/wow_1.mp3")
     wow.style = "display:block;transition:none"
@@ -444,6 +446,14 @@ async function showLeaderboard(mode, criteria) {
         cell.style.textAlign = 'center';
         cell.style.color = 'red';
     }
+    // 高亮显示按钮
+    buttons = document.getElementsByClassName("smaller")
+    for (let i=0;i<buttons.length;i++) {
+        buttons[i].style.filter = ""
+    }
+    tobehlight1 = "ldb_"+criteria
+    tobehlight2 = "ldb_"+mode
+    document.getElementById(tobehlight1).style.filter = document.getElementById(tobehlight2).style.filter = "invert(1)"
 }
 
 function scorec(value) {
@@ -576,7 +586,7 @@ function handlefile(file,target) {
     const file_url = window.URL.createObjectURL(file)
     if (target == "s4_im") {
         document.getElementById("screen4_img_pre").src = file_url
-        custom_s4_im_url = file_url
+        custom_scene3_url = file_url
     } else if (target == "s4_wo") {
         document.getElementById("screen4_wow_pre").src = file_url
         custom_s4_wo_url = file_url
@@ -592,9 +602,6 @@ function handlefile(file,target) {
     } else if (target == "scene2") {
         document.getElementById("scene2_pre").src = file_url
         custom_scene2_url = file_url
-    } else if (target == "scene3") {
-        document.getElementById("scene3_pre").src = file_url
-        custom_scene3_url = file_url
     }
 }
 document.getElementById("s4_im_upl").addEventListener('change',function(e){
@@ -726,7 +733,7 @@ function gen_clock_sfx() {
     setTimeout(()=>{w.volume = 1},150)
 }
 if (window.matchMedia("(dynamic-range: high)").matches) {
-    document.getElementById("screen4_wow").src = "assets/png/wow_hdr.png"
+    wow_ori_src = "assets/png/wow_hdr.png"
 }
 console.log(`${app_name} version ${app_ver}. Last updated ${app_date}.`)
 

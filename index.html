@@ -115,18 +115,18 @@
             <button onclick="close_s6()">确定</button>
         </div>
         <!-- 排行榜界面 -->
-        <div id="ccb_screen_7" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 20px; background-color: #000;">
-            <h2 id="ccb_s7_title" style="color:#ff7; font-size: max(6vw, 24px); margin-bottom: 20px;">踩踩背排行榜</h2>
+        <div id="ccb_screen_7" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 20px; background-color: #000; overflow-y: scroll; max-height: 90vh; max-height: 90dvh">
+            <h2 id="ccb_s7_title" style="color:#ff7; font-size: calc(var(--ccb_font_size)*.7); margin-bottom: 20px;">踩踩背排行榜</h2>
 
             <div style="margin-bottom: 15px;">
-                <button onclick="showLeaderboard('classic', current_criteria)" class="smaller">经典模式</button>
-                <button onclick="showLeaderboard('challenge', current_criteria)" class="smaller">挑战模式</button>
+                <button onclick="showLeaderboard('classic', current_criteria)" class="smaller" id="ldb_classic">经典模式</button>
+                <button onclick="showLeaderboard('challenge', current_criteria)" class="smaller" id="ldb_challenge">挑战模式</button>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <button onclick="showLeaderboard(current_mode, 'ccb_score')" class="smaller">ccb分数</button>
-                <button onclick="showLeaderboard(current_mode, 'treads_count')" class="smaller">踩背次数</button>
-                <button onclick="showLeaderboard(current_mode, 'cps')" class="smaller">CPS</button>
+                <button onclick="showLeaderboard(current_mode, 'ccb_score')" class="smaller" id="ldb_ccb_score">ccb分数</button>
+                <button onclick="showLeaderboard(current_mode, 'treads_count')" class="smaller" id="ldb_treads_count">踩背次数</button>
+                <button onclick="showLeaderboard(current_mode, 'cps')" class="smaller" id="ldb_cps">CPS</button>
             </div>
 
             <table id="leaderboard_table" style="width: 90%; max-width: 800px; border-collapse: collapse; color: #fff;">
@@ -147,9 +147,11 @@
         <!-- 用户名输入弹窗 -->
         <div id="ccb_screen_8" style="display:none; flex-direction:column; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); z-index:1000;">
             <div style="background-color: #333; padding: 30px; border-radius: 10px; text-align: center; color: #fff;">
-                <p style="font-size: 1.2em; margin-bottom: 20px;">请输入您的名字以加入排行榜：</p>
-                <input type="text" id="username_input" placeholder="您的名字" style="padding: 10px; font-size: 1em; width: 80%; max-width: 300px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #555; background-color: #222; color: #fff;">
-                <button onclick="submitUsername()" style="padding: 10px 20px; font-size: 1em;">确认</button>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">你是谁？<span title="来来来来" onmouseover="document.getElementById('lailailai').play()">来</span>加入排行榜：</p>
+                <input type="text" id="username_input" placeholder="请输入文本" style="padding: 10px; font-size: 1em; width: 80%; max-width: 300px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #555; background-color: #222; color: #fff;"><br>
+                <span id="ccb_s8_txt1"></span><br><br>
+                <button onclick="submitUsername()" class="smaller">确认</button><br><br>
+                <button onclick="change_screen(5)" class="smaller">取消</button>
             </div>
         </div>
         <div id="cbbpm_visual"></div>
@@ -164,6 +166,7 @@
         <audio src="assets/mp3/wcsndm.mp3" id="wcsndm"></audio>
         <audio src="assets/opus/bgm.opus" id="bgm" loop="1"></audio>
         <audio src="assets/mp3/clock.mp3" id="bpm_clock"></audio>
+        <audio src="assets/opus/lailailai.opus" id="lailailai"></audio>
     </div>
     <div id="comment_modal_backdrop">
         <div id="comment_modal_content">
